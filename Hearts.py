@@ -53,9 +53,9 @@ class Hearts:
 
 	def handleScoring(self):
 		p, highestScore = None, 0
-		print "\nScores:\n"
+		print("\nScores:\n")
 		for player in self.players:
-			print player.name + ": " + str(player.score)
+			print(player.name + ": " + str(player.score))
 			if player.score > highestScore:
 				p = player
 				highestScore = player.score
@@ -97,11 +97,11 @@ class Hearts:
 		print(f"{p.name} won the trick.")
 		# print 'Making new trick'
 		self.currentTrick = Trick()
-		print self.currentTrick.suit
+		print(self.currentTrick.suit)
 		
 
 	def passCards(self, index):
-		print self.printPassingCards()
+		print(self.printPassingCards())
 		passTo = self.passes[self.trickNum] # how far to pass cards
 		passTo = (index + passTo) % len(self.players) # the index to which cards are passed
 		while len(self.passingCards[passTo]) < cardsToPass: # pass three cards
@@ -136,9 +136,7 @@ class Hearts:
 		self.printPlayers()
 		if not self.trickNum % 4 == 3: # don't pass every fourth hand
 			for i in range(0, len(self.players)):
-				print # spacing
-				self.printPlayer(i)
-				self.passCards(i % len(self.players))
+				print('\n' + self.printPlayer(i) + '\n' + self.passCards(i % len(self.players)))
 
 			self.distributePassedCards()
 			self.printPlayers()
@@ -208,7 +206,7 @@ class Hearts:
 
 					if addCard is not None and self.currentTrick.suit == Suit(noSuit):
 						if addCard.suit == Suit(hearts) and not self.heartsBroken:
-							print("Hearts not yet broken.)"
+							print("Hearts not yet broken.")
 							addCard = None
 
 					
@@ -243,7 +241,7 @@ class Hearts:
 				trickStr += self.players[i].name + ": " + str(card) + "\n"
 			else:
 				trickStr += self.players[i].name + ": None\n"
-		print trickStr
+		print(trickStr)
 
 	def getWinner(self):
 		minScore = 200 # impossibly high
@@ -279,7 +277,7 @@ def main():
 			print("New round")
 			hearts.newRound()
 
-	print # spacing
+	print('\n')# spacing
 	print(hearts.getWinner().name, "wins!")
 
 
