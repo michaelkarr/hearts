@@ -136,7 +136,9 @@ class Hearts:
 		self.printPlayers()
 		if not self.trickNum % 4 == 3: # don't pass every fourth hand
 			for i in range(0, len(self.players)):
-				print('\n' + self.printPlayer(i) + '\n' + self.passCards(i % len(self.players)))
+				print('\n')
+				self.printPlayer(i)
+				self.passCards(i % len(self.players))
 
 			self.distributePassedCards()
 			self.printPlayers()

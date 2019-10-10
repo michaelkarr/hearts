@@ -14,7 +14,7 @@ class Player:
 	def getInput(self, option):
 		card = None
 		while card is None:
-			card = raw_input(self.name + ", select a card to " + option + ": ")
+			card = input(self.name + ", select a card to " + option + ": ")
 		return card
 
 	def play(self, option='play', c=None, auto=False):
