@@ -18,15 +18,16 @@ class Player:
 		return card
 
 	def play(self, option='play', c=None, auto=False):
-		if auto:
-			card = self.hand.getRandomCard()
-		elif c is None:
-			card = self.getInput(option)
-		else:
-			card = c
-		if not auto:
-			card = self.hand.playCard(card)
-		return card
+		# if auto:
+		# 	card = self.hand.getRandomCard()
+		# elif c is None:
+		# 	card = self.getInput(option)
+		# else:
+		# 	card = c
+		# if not auto:
+		# 	card = self.hand.playCard(card)
+		# return card
+		raise NotImplementedError("Must define type of player")
 
 
 	def trickWon(self, trick):

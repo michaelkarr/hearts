@@ -2,6 +2,8 @@ from Deck import Deck
 from Card import Card, Suit, Rank
 from Player import Player
 from Trick import Trick
+from AutoPlayer import AutoPlayer
+from HumanPlayer import HumanPlayer
 
 '''
 Change auto to False if you would like to play the game manually.
@@ -10,7 +12,7 @@ When auto is True, passing is disabled and the computer plays the
 game by "guess and check", randomly trying moves until it finds a
 valid one.
 '''
-auto = False
+auto = True
 
 totalTricks = 13
 maxScore = 100
@@ -36,7 +38,7 @@ class Hearts:
 
 		# Make four players
 
-		self.players = [Player("Danny"), Player("Desmond"), Player("Ben"), Player("Tyler")]
+		self.players = [AutoPlayer("Danny"), AutoPlayer("Desmond"), AutoPlayer("Ben"), AutoPlayer("Tyler")]
 		
 		'''
 		Player physical locations:
@@ -164,7 +166,7 @@ class Hearts:
 
 			while addCard is None: # wait until a valid card is passed
 				
-				addCard = curPlayer.play(auto=auto) # change auto to False to play manually
+				addCard = curPlayer.play() # change auto to False to play manually
 
 
 				# the rules for what cards can be played
