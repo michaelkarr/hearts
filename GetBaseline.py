@@ -33,7 +33,7 @@ def CDF(x, filename):
     plotCDF(x,y, filename)
 
 num_trials = 100
-num_iter = 100
+num_iter = 10
 pids = []
 totals = []
 for trial in range(num_trials):
@@ -48,7 +48,7 @@ for trial in range(num_trials):
         stdout, _ = p.communicate()
         last_line = stdout.splitlines()[-1]
         totals[trial][str(last_line).split()[0][2:]] += 1
-random_boi_scores = [x['RandomBoi'] for x in totals]
+random_boi_scores = [x['Dani'] for x in totals]
 print("Plotting CDF")
 CDF(random_boi_scores, 'random_boi_cdf')
 #load_CDF('random_boi_cdf')

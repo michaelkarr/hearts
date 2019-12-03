@@ -2,7 +2,7 @@ from Deck import Deck
 from Card import Card, Suit, Rank
 from Player import Player
 from Trick import Trick
-from AutoPlayer import AutoPlayer
+from AutoPlayer import AutoPlayer,QLearningBoi
 from HumanPlayer import HumanPlayer
 
 '''
@@ -38,7 +38,7 @@ class Hearts:
 
 		# Make four players
 
-		self.players = [AutoPlayer("Danny"), AutoPlayer("Desmond"), AutoPlayer("Ben"), AutoPlayer("Tyler")]
+		self.players = [QLearningBoi("Dani"), AutoPlayer("Desmond"), AutoPlayer("Ben"), AutoPlayer("Tyler")]
 		
 		'''
 		Player physical locations:
@@ -109,7 +109,7 @@ class Hearts:
 		while len(self.passingCards[passTo]) < cardsToPass: # pass three cards
 			passCard = None
 			while passCard is None: # make sure string passed is valid
-				passCard = self.players[index].play(option='pass')
+				passCard = self.players[index].play(self, option='pass')
 				if passCard is not None:
 					# remove card from player hand and add to passed cards
 					self.passingCards[passTo].append(passCard)
@@ -149,7 +149,7 @@ class Hearts:
 		shift = 0
 		if self.trickNum == 0:
 			startPlayer = self.players[start]
-			addCard = startPlayer.play(option="play", c='2c')
+			addCard = startPlayer.play(self, option="play", c='2c')
 			startPlayer.removeCard(addCard)
 
 			self.currentTrick.addCard(addCard, start)
@@ -166,7 +166,7 @@ class Hearts:
 
 			while addCard is None: # wait until a valid card is passed
 				
-				addCard = curPlayer.play() # change auto to False to play manually
+				addCard = curPlayer.play(self) # change auto to False to play manually
 
 
 				# the rules for what cards can be played
