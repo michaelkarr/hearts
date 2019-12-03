@@ -17,11 +17,12 @@ class QLearningBoi(Player):
         super().__init__(name)
         self.q = defaultdict(int)
         self.n = 1
-        self.q_filename = self.name + '.pickle'
-        self.n_filename = self.name + 'n.pickle'
+        self.q_filename = str(self.name) + '.pickle'
+        self.n_filename = str(self.name) + 'n.pickle'
         self.lastAction = None
         self.lastState = None
         self.lastReward = None
+        self.lastScore = 0
         self.syncQAndn()
 
     def syncQAndn(self):
@@ -79,8 +80,8 @@ class QLearningBoi(Player):
         return (max_action, max_val)
 
     def writeQAndn(self):
-        pickle.write(self.q, open(self.q_filename, 'wb+'))
-        pickle.write(self.n, open(self.n_filename, 'wb+'))
+        pickle.dump(self.q, open(self.q_filename, 'wb'))
+        pickle.dump(self.n, open(self.n_filename, 'wb'))
 
     # Qlearning update
     def updateQ(self, state, gamma=0.9):
@@ -116,10 +117,11 @@ class QLearningBoi(Player):
         if c is not None:
             return self.hand.playCard(c)
         action = self.bestAction(state)
-        reward = self.bestActionVal(state)
+        reward = 13 - (self.score - self.lastScore)
         # So we can update Q
         self.lastState = state
         self.lastAction = action
         self.lastReward = reward
+        self.lastScore = self.score
         play_card = self.str2card(state, action)
         return self.epsilon_greedy(play_card)
