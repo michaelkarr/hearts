@@ -23,7 +23,7 @@ hearts = 3
 cardsToPass = 3
 
 class Hearts:
-	def __init__(self):
+	def __init__(self, players):
 		
 		self.roundNum = 0
 		self.trickNum = 0 # initialization value such that first round is round 0
@@ -38,7 +38,8 @@ class Hearts:
 
 		# Make four players
 
-		self.players = [QLearningBoi("Dani"), AutoPlayer("Desmond"), AutoPlayer("Ben"), AutoPlayer("Tyler")]
+		self.players = players
+                #self.players = [QLearningBoi("Dani"), AutoPlayer("Desmond"), AutoPlayer("Ben"), AutoPlayer("Tyler")]
 		
 		'''
 		Player physical locations:
@@ -259,8 +260,8 @@ class Hearts:
 
 
 
-def main():
-	hearts = Hearts()
+def main(players):
+	hearts = Hearts(players)
 
 	# play until someone loses
 	while hearts.losingPlayer is None or hearts.losingPlayer.score < maxScore:
@@ -283,9 +284,11 @@ def main():
 
 	print('\n')# spacing
 	print(hearts.getWinner().name, "wins!")
+	return hearts.getWinner().name
 
 
 
 if __name__ == '__main__':
-	main()
+	players = [QLearningBoi("Dani"), AutoPlayer("Desmond"), AutoPlayer("Ben"), AutoPlayer("Tyler")]
+	main(players)
 
