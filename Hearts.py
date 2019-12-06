@@ -4,6 +4,7 @@ from Player import Player
 from Trick import Trick
 from AutoPlayer import AutoPlayer,QLearningBoi
 from HumanPlayer import HumanPlayer
+from MCTSPlayer import MCTSPlayer
 
 '''
 Change auto to False if you would like to play the game manually.
@@ -23,7 +24,7 @@ hearts = 3
 cardsToPass = 3
 
 class Hearts:
-	def __init__(self):
+	def __init__(self, players):
 		
 		self.roundNum = 0
 		self.trickNum = 0 # initialization value such that first round is round 0
@@ -38,8 +39,8 @@ class Hearts:
 
 		# Make four players
 
-		#self.players = players
-		self.players = [QLearningBoi("Dani"), AutoPlayer("Desmond"), AutoPlayer("Ben"), AutoPlayer("Tyler")]
+		self.players = players
+                #self.players = [QLearningBoi("Dani"), AutoPlayer("Desmond"), AutoPlayer("Ben"), AutoPlayer("Tyler")]
 		
 		'''
 		Player physical locations:
@@ -92,15 +93,17 @@ class Hearts:
 			i += 1
 
 
-	def evaluateTrick(self):
+	def evaluateTrick(self, printOut=True):
 		self.trickWinner = self.currentTrick.winner
 		p = self.players[self.trickWinner]
 		p.trickWon(self.currentTrick)
 		self.printCurrentTrick()
-		print(f"{p.name} won the trick.")
+		if printOut:
+			print(f"{p.name} won the trick.")
 		# print 'Making new trick'
 		self.currentTrick = Trick()
-		print(self.currentTrick.suit)
+		if printOut:
+			print(self.currentTrick.suit)
 		
 
 	def passCards(self, index):
@@ -146,6 +149,85 @@ class Hearts:
 			self.distributePassedCards()
 			self.printPlayers()
 
+	def finishTrick(self, start, action):
+		print("finishTrick start")
+		if self.trickNum >= totalTricks:
+			print('end game')
+			return
+		playersLeft = len(self.players) - self.currentTrick.cardsInTrick
+		# have each player take their turn
+		for i in range(start, start + playersLeft):
+			# print("playerNum: ", i)
+			# self.printCurrentTrick()
+			curPlayerIndex = i % len(self.players)
+			# self.printPlayer(curPlayerIndex)
+			curPlayer = self.players[curPlayerIndex]
+			addCard = None
+
+			while addCard is None: # wait until a valid card is passed
+				if i == 0:
+					addCard = action
+				else:
+					addCard = curPlayer.play(self) # change auto to False to play manually
+
+
+				# the rules for what cards can be played
+				# card set to None if it is found to be invalid
+				if addCard is not None:
+					
+					# if it is not the first trick and no cards have been played,
+					# set the first card played as the trick suit if it is not a heart
+					# or if hearts have been broken
+					if self.trickNum != 0 and self.currentTrick.cardsInTrick == 0:
+						if addCard.suit == Suit(hearts) and not self.heartsBroken:
+							# if player only has hearts but hearts have not been broken,
+							# player can play hearts
+							if not curPlayer.hasOnlyHearts():
+								# print(curPlayer.hasOnlyHearts())
+								# print(curPlayer.hand.__str__())
+								print("Hearts have not been broken.")
+								addCard = None
+							else:
+								self.currentTrick.setTrickSuit(addCard)
+						else:
+							self.currentTrick.setTrickSuit(addCard)
+
+					# player tries to play off suit but has trick suit
+					if addCard is not None and addCard.suit != self.currentTrick.suit:
+						if curPlayer.hasSuit(self.currentTrick.suit):
+							print("Must play the suit of the current trick.")
+							addCard = None
+						elif addCard.suit == Suit(hearts):
+							self.heartsBroken = True
+
+					if self.trickNum == 0:
+						if addCard is not None:
+							if addCard.suit == Suit(hearts):
+								print("Hearts cannot be broken on the first hand.")
+								self.heartsBroken = False
+								addCard = None
+							elif addCard.suit == Suit(spades) and addCard.rank == Rank(queen):
+								print("The queen of spades cannot be played on the first hand.")
+								addCard = None
+
+					if addCard is not None and self.currentTrick.suit == Suit(noSuit):
+						if addCard.suit == Suit(hearts) and not self.heartsBroken:
+							print("Hearts not yet broken.")
+							addCard = None
+
+					
+
+					if addCard is not None:
+						if addCard == Card(queen, spades):
+							self.heartsBroken = True
+						curPlayer.removeCard(addCard)
+
+
+			self.currentTrick.addCard(addCard, curPlayerIndex)
+			print('all players played')
+		self.evaluateTrick(printOut=False)
+		self.trickNum += 1
+
 	def playTrick(self, start):
 		shift = 0
 		if self.trickNum == 0:
@@ -168,7 +250,7 @@ class Hearts:
 			while addCard is None: # wait until a valid card is passed
 				
 				addCard = curPlayer.play(self) # change auto to False to play manually
-
+				# print('addCard', addCard)
 
 				# the rules for what cards can be played
 				# card set to None if it is found to be invalid
@@ -260,8 +342,8 @@ class Hearts:
 
 
 
-def main():
-	hearts = Hearts()
+def main(players):
+	hearts = Hearts(players)
 
 	# play until someone loses
 	while hearts.losingPlayer is None or hearts.losingPlayer.score < maxScore:
@@ -289,5 +371,8 @@ def main():
 
 
 if __name__ == '__main__':
-	main()
+	players = [MCTSPlayer("Dani"), AutoPlayer("Desmond"), AutoPlayer("Ben"), AutoPlayer("Tyler")]
+	# players = [QLearningBoi("Dani"), AutoPlayer("Desmond"), AutoPlayer("Ben"), AutoPlayer("Tyler")]
+
+	main(players)
 
