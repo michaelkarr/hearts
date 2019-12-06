@@ -112,8 +112,8 @@ class QLearningBoi(Player):
         state = self.getState(game)
         if len(self.getActions(state)) == 0:
             return self.hand.getRandomCard()
-        if self.lastAction and self.lastState and self.lastReward: #Qlearning update
-            self.updateQ(state)
+        #if self.lastAction and self.lastState and self.lastReward: #Qlearning update
+        #    self.updateQ(state)
         if c is not None:
             return self.hand.playCard(c)
         action = self.bestAction(state)
